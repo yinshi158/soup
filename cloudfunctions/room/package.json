@@ -1,0 +1,9 @@
+{
+  "name": "room",
+  "version": "1.0.0",
+  "description": "海龟汤房间管理：生命周期/题目/群聊",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

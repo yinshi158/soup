@@ -1,0 +1,6 @@
+.publish-page { padding-bottom: 60rpx; }
+.label { margin-top: 24rpx; }
+.label:first-of-type { margin-top: 0; }
+.upload-btn { margin-top: 28rpx; }
+.btn-primary { margin-top: 20rpx; }
+.publish-tip { margin-top: 20rpx; text-align: center; }

@@ -1,0 +1,9 @@
+{
+  "name": "plaza",
+  "version": "1.0.0",
+  "description": "海龟汤故事广场：浏览/搜索/发布/编辑/删除",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

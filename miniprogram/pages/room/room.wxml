@@ -1,0 +1,224 @@
+<view class="room-page">
+
+  <!-- 顶部：房间码 + 在线人数 + 邀请 -->
+  <view class="room-header">
+    <view class="room-code-box" bindtap="copyCode">
+      <text class="room-code-label" style="width: 92rpx; display: block; box-sizing: border-box">房间码</text>
+      <text class="room-code">{{code}}</text>
+      
+    </view>
+    <view class="room-header-right" style="width: 297rpx; display: flex; box-sizing: border-box">
+      <view class="online-pill" style="width: 328rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">{{onlineCount}} 人在线</view>
+      <button class="share-btn" open-type="share">邀请</button>
+    </view>
+  </view>
+
+  <!-- 过关横幅 -->
+  <view class="pass-banner" wx:if="{{passed}}">本汤已被还原！房主可在「题目」页揭晓完整汤底</view>
+
+  <!-- Tab 切换 -->
+  <view class="tabs">
+    <view class="tab {{activeTab==='ai'?'tab-active':''}}" data-tab="ai" bindtap="switchTab">AI 推理</view>
+    <view class="tab {{activeTab==='chat'?'tab-active':''}}" data-tab="chat" bindtap="switchTab">群聊</view>
+    <view class="tab {{activeTab==='story'?'tab-active':''}}" data-tab="story" bindtap="switchTab">题目</view>
+    <view class="tab {{activeTab==='members'?'tab-active':''}}" data-tab="members" bindtap="switchTab">成员</view>
+  </view>
+
+  <!-- ============ AI 推理 ============ -->
+  <view class="tab-pane" hidden="{{activeTab!=='ai'}}">
+    <scroll-view scroll-y class="msg-scroll" scroll-into-view="{{scrollAI}}" scroll-with-animation>
+      <view class="msg-list">
+        <view wx:if="{{loading}}" class="empty-tip muted">正在连接房间…</view>
+        <view wx:if="{{!loading && aiMessages.length===0}}" class="empty-tip muted">还没有对话，提出你的第一个问题吧</view>
+
+        <view wx:for="{{aiMessages}}" wx:key="id" id="msg-{{index}}"
+          class="msg-row {{item.role==='system'?'msg-system-row':(item.self?'msg-right':'msg-left')}}">
+          <view wx:if="{{item.role==='system'}}" class="msg-system">{{item.content}}</view>
+          <block wx:else>
+            <view class="msg-meta">{{item.nickname}} · {{item.time}}</view>
+            <view class="bubble {{item.role==='assistant'?'bubble-ai':(item.self?'bubble-self':'bubble-other')}}">
+              <text wx:if="{{item.role==='assistant'}}" class="ai-badge">AI 主持</text>
+              <text class="{{item.verdict?'verdict':''}}">{{item.content}}</text>
+            </view>
+          </block>
+        </view>
+
+        <!-- AI 思考中 -->
+        <view wx:if="{{thinking}}" class="msg-row msg-left">
+          <view class="msg-meta">AI 主持人</view>
+          <view class="bubble bubble-ai thinking-bubble">
+            <text class="dot"></text><text class="dot"></text><text class="dot"></text>
+          </view>
+        </view>
+        <view class="scroll-tail"></view>
+      </view>
+    </scroll-view>
+
+    <view class="quick-row" style="height: 69rpx; display: flex; box-sizing: border-box">
+      <view class="quick-btn" bindtap="quickClue" style="height: -29rpx; display: ; box-sizing: ; left: 0rpx; top: 0rpx">整理线索</view>
+      <view class="quick-btn quick-btn-amber" bindtap="openRestore">故事还原</view>
+    </view>
+    <view class="input-bar">
+      <view class="field chat-field">
+        <input class="field-inner" placeholder="问一个能用「是/不是」回答的问题…"
+          value="{{inputAI}}" bindinput="onInputAI" bindconfirm="sendAI"
+          confirm-type="send" cursor-spacing="20" />
+      </view>
+      <button class="btn-primary send-btn" bindtap="sendAI" style="width: 197rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">发送</button>
+    </view>
+  </view>
+
+  <!-- ============ 玩家群聊 ============ -->
+  <view class="tab-pane" hidden="{{activeTab!=='chat'}}">
+    <scroll-view scroll-y class="msg-scroll" scroll-into-view="{{scrollChat}}" scroll-with-animation>
+      <view class="msg-list">
+        <view wx:if="{{chatMessages.length===0}}" class="empty-tip muted">还没有群聊消息，@队友 一起讨论吧（AI 不参与）</view>
+        <view wx:for="{{chatMessages}}" wx:key="id" id="chat-{{index}}"
+          class="msg-row {{item.self?'msg-right':'msg-left'}}">
+          <view class="msg-meta">{{item.nickname}} · {{item.time}}</view>
+          <view class="bubble {{item.self?'bubble-self':'bubble-other'}}">
+            <text wx:for="{{item.segments}}" wx:for-item="seg" wx:for-index="si" wx:key="i"
+              class="{{seg.mention?'mention':''}}">{{seg.text}}</text>
+          </view>
+        </view>
+        <view class="scroll-tail"></view>
+      </view>
+    </scroll-view>
+    <view class="input-bar">
+      <view class="field chat-field">
+        <input class="field-inner" placeholder="和队友聊聊推理思路…"
+          value="{{inputChat}}" bindinput="onInputChat" bindconfirm="sendChat"
+          confirm-type="send" cursor-spacing="20" />
+      </view>
+      <button class="btn-primary send-btn" bindtap="sendChat" style="width: 231rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">发送</button>
+    </view>
+  </view>
+
+  <!-- ============ 题目 ============ -->
+  <view class="tab-pane" hidden="{{activeTab!=='story'}}">
+    <scroll-view scroll-y class="pane-scroll">
+      <block wx:if="{{hasStory}}">
+        <view class="card">
+          <view class="card-title">汤面</view>
+          <view class="story-surface">{{story.surface}}</view>
+        </view>
+        <view class="card answer-card" wx:if="{{revealed && story.answer}}">
+          <view class="card-title">汤底（已揭晓）</view>
+          <view>{{story.answer}}</view>
+        </view>
+        <view class="card answer-locked muted" wx:else>汤底保密中 —— 还原故事或等房主揭晓后可见</view>
+      </block>
+      <view class="card muted" wx:else>房主还没有选题{{isOwner?'，从下方题库挑一道吧':''}}</view>
+
+      <!-- 房主操作区 -->
+      <block wx:if="{{isOwner}}">
+        <view class="card">
+          <view class="card-title">房主操作</view>
+          <view class="owner-actions">
+            <button class="btn-ghost btn-sm" bindtap="openStoryPicker">内置题库</button>
+            <button class="btn-ghost btn-sm" bindtap="uploadJSON">上传题目 JSON</button>
+            <button class="btn-ghost btn-sm" bindtap="reveal" disabled="{{revealed || !hasStory}}">揭晓答案</button>
+          </view>
+          <view class="room-story-list" wx:if="{{roomStories.length}}">
+            <view class="room-story-count muted">本房间已加载 {{roomStories.length}} 道题 · 点标题可切题</view>
+            <view class="room-story-item {{item.current?'room-story-current':''}}"
+              wx:for="{{roomStories}}" wx:key="index"
+              data-index="{{item.index}}" bindtap="switchStory">
+              <text class="room-story-title">{{item.title || ('题目 ' + (item.index+1))}}</text>
+              <text class="tag" wx:if="{{item.current}}">当前</text>
+            </view>
+          </view>
+        </view>
+        <view class="card">
+          <button class="btn-danger" bindtap="closeRoom">关闭房间</button>
+        </view>
+      </block>
+      <view class="card muted" wx:else>题目由房主「{{ownerNickname}}」管理</view>
+    </scroll-view>
+  </view>
+
+  <!-- ============ 成员 ============ -->
+  <view class="tab-pane" hidden="{{activeTab!=='members'}}">
+    <scroll-view scroll-y class="pane-scroll">
+      <view class="card">
+        <view class="card-title">成员（{{onlineCount}}/{{members.length}} 在线）</view>
+        <view class="member-row" wx:for="{{members}}" wx:key="nickname">
+          <view class="member-dot {{item.online?'member-dot-on':''}}"></view>
+          <text class="member-name">{{item.nickname}}</text>
+          <text class="tag" wx:if="{{item.isOwner}}">房主</text>
+          <text class="tag tag-gray" wx:if="{{item.nickname===nickname}}">我</text>
+          <text class="muted member-status">{{item.online?'在线':'离线'}}</text>
+        </view>
+      </view>
+
+      <view class="card invite-card">
+        <view class="card-title">邀请朋友</view>
+        <view class="invite-code">{{code}}</view>
+        <view class="muted">把房间码发给朋友，在首页输入即可加入</view>
+        <view class="modal-actions">
+          <button class="btn-ghost" bindtap="copyCode">复制房间码</button>
+          <button class="btn-primary" open-type="share">分享给好友</button>
+        </view>
+      </view>
+
+      <view class="card">
+        <button class="btn-plain" bindtap="leaveRoom">退出房间</button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ============ 故事还原弹窗 ============ -->
+  <view class="mask" wx:if="{{showRestore}}" catchtouchmove="noop">
+    <view class="modal">
+      <view class="modal-title">故事还原</view>
+      <view class="muted restore-tip">把你推理出的完整真相写下来，AI 会根据胜利条件判定是否过关。其他玩家只会看到你提交了还原，看不到内容。</view>
+      <textarea class="textarea" placeholder="比如：他当年喝到的其实是……" maxlength="1000"
+        value="{{restoreText}}" bindinput="onRestoreInput" />
+      <view class="modal-actions">
+        <button class="btn-plain" bindtap="closeRestore">取消</button>
+        <button class="btn-primary" bindtap="submitRestore">提交判定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- ============ 题库 / 广场 弹窗 ============ -->
+  <view class="mask" wx:if="{{showStoryPicker}}" catchtouchmove="noop">
+    <view class="modal">
+      <view class="picker-tabs">
+        <view class="picker-tab {{pickerTab==='builtin'?'picker-tab-active':''}}" data-tab="builtin" bindtap="switchPickerTab">内置题库</view>
+        <view class="picker-tab {{pickerTab==='plaza'?'picker-tab-active':''}}" data-tab="plaza" bindtap="switchPickerTab">故事广场</view>
+      </view>
+      <scroll-view scroll-y class="picker-scroll" wx:if="{{pickerTab==='builtin'}}">
+        <view class="picker-item" wx:for="{{builtinStories}}" wx:key="_id"
+          data-id="{{item._id}}" bindtap="loadBuiltin">
+          <view class="picker-title">{{item.title}}</view>
+          <view class="muted picker-surface">{{item.surface}}</view>
+        </view>
+      </scroll-view>
+      <scroll-view scroll-y class="picker-scroll" wx:else>
+        <view wx:if="{{plazaStories.length===0}}" class="empty-tip muted">广场还没有故事</view>
+        <view class="picker-item" wx:for="{{plazaStories}}" wx:key="_id"
+          data-id="{{item._id}}" bindtap="loadPlazaStory">
+          <view class="picker-title">{{item.plazaNo}} · {{item.title}}</view>
+          <view class="muted picker-surface">{{item.surface}}</view>
+        </view>
+      </scroll-view>
+      <view class="modal-actions">
+        <button class="btn-plain" bindtap="closeStoryPicker">取消</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- ============ 恭喜过关弹窗 ============ -->
+  <view class="mask" wx:if="{{showPass}}">
+    <view class="modal">
+      <view class="pass-emoji">🎉</view>
+      <view class="modal-title">恭喜过关！</view>
+      <view class="muted pass-tip">真相已被还原，房主可以在「题目」页揭晓完整汤底。</view>
+      <view class="modal-actions">
+        <button class="btn-primary" bindtap="closePass">继续</button>
+      </view>
+    </view>
+  </view>
+
+</view>

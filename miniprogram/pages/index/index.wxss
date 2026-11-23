@@ -1,0 +1,100 @@
+.page {
+  padding-bottom: 60rpx;
+}
+
+/* 品牌区 */
+.hero {
+  text-align: center;
+  padding: 70rpx 0 30rpx;
+}
+.hero-emoji {
+  font-size: 110rpx;
+  line-height: 1.2;
+}
+.hero-title {
+  font-size: 52rpx;
+  font-weight: 800;
+  letter-spacing: 4rpx;
+  margin-top: 12rpx;
+}
+.hero-sub {
+  color: #6b7280;
+  font-size: 26rpx;
+  margin-top: 8rpx;
+}
+
+/* 玩法 */
+.rule {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 18rpx;
+  font-size: 27rpx;
+  color: #374151;
+}
+.rule:last-child { margin-bottom: 0; }
+.rule-num {
+  flex-shrink: 0;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #059669;
+  font-weight: 700;
+  font-size: 24rpx;
+  margin-right: 18rpx;
+  margin-top: 4rpx;
+}
+
+/* 表单 */
+.create-btn { margin-top: 28rpx; }
+.join-row {
+  display: flex;
+  gap: 20rpx;
+  align-items: center;
+}
+.join-field { flex: 1; height: 80rpx; }
+.join-btn {
+  flex-shrink: 0;
+  width: 160rpx;
+}
+
+/* 单行输入框外观统一定义在 app.wxss：.field（外框/垂直居中）+ .field-inner（内部 input） */
+
+/* 继续上次房间 */
+.resume-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2rpx solid #a7f3d0;
+}
+.resume-title {
+  font-weight: 700;
+  color: #059669;
+  font-size: 30rpx;
+}
+.resume-arrow {
+  font-size: 56rpx;
+  color: #059669;
+  line-height: 1;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 40rpx;
+  padding: 0 40rpx;
+}
+
+/* ---------- 深色模式 ---------- */
+@media (prefers-color-scheme: dark) {
+  .hero-sub { color: #94a3b8; }
+  .rule { color: #cbd5e1; }
+  .rule-num {
+    background: rgba(16, 185, 129, 0.16);
+    color: #34d399;
+  }
+  .resume-card { border-color: #334155; }
+  .resume-title,
+  .resume-arrow { color: #34d399; }
+}

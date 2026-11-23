@@ -1,0 +1,28 @@
+<view class="publish-page">
+  <view class="card">
+    <view class="card-title">{{isEdit ? '编辑故事 ' + plazaNo : '发布新故事'}}</view>
+
+    <label class="label">故事名称 *</label>
+    <view class="field">
+      <input class="field-inner" placeholder="比如：酒吧里的一杯水" maxlength="30" value="{{title}}" bindinput="onTitle" />
+    </view>
+
+    <label class="label">汤面（玩家看到的谜题）*</label>
+    <textarea class="textarea" placeholder="写下谜面…" maxlength="2000" value="{{surface}}" bindinput="onSurface" />
+
+    <label class="label">汤底（完整真相，保密）*</label>
+    <textarea class="textarea" placeholder="写下真相，只有 AI 和你编辑时能看到…" maxlength="4000" value="{{answer}}" bindinput="onAnswer" />
+
+    <label class="label">胜利条件（猜出什么算过关，仅供 AI 判定）*</label>
+    <textarea class="textarea" placeholder="比如：猜出他是个光头" maxlength="500" value="{{victory}}" bindinput="onVictory" />
+
+    <label class="label">补充说明（可选，仅供 AI 参考）</label>
+    <textarea class="textarea" placeholder="可留空" maxlength="1000" value="{{additional}}" bindinput="onAdditional" />
+
+    <button class="btn-ghost upload-btn" bindtap="uploadJSON">从 JSON 文件填入（支持批量）</button>
+    <button class="btn-primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">
+      {{isEdit ? '保存修改' : '发布到广场'}}
+    </button>
+    <view class="muted publish-tip">发布即表示同意内容规范，违规内容会被拦截。汤底与胜利条件不会展示给玩家。</view>
+  </view>
+</view>

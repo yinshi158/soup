@@ -1,0 +1,395 @@
+/* 房间页：整页 flex 布局，消息区滚动，输入栏沉底 */
+
+.room-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---------- 顶部 ---------- */
+.room-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  background: #ffffff;
+  border-bottom: 2rpx solid #e5e7eb;
+}
+.room-code-box {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.room-code-label { font-size: 22rpx; color: #9ca3af; }
+.room-code {
+  font-size: 40rpx;
+  font-weight: 800;
+  letter-spacing: 4rpx;
+  color: #059669;
+}
+.room-code-copy {
+  font-size: 22rpx;
+  color: #6b7280;
+  background: #f1f5f9;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+}
+.room-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.online-pill { font-size: 22rpx; color: #4b5563; }
+.share-btn {
+  font-size: 24rpx;
+  line-height: 56rpx;
+  padding: 0 28rpx;
+  background: #059669;
+  color: #ffffff;
+  border-radius: 999rpx;
+  margin: 0;
+}
+.share-btn::after { border: none; }
+
+.pass-banner {
+  background: #fffbeb;
+  color: #b45309;
+  font-size: 24rpx;
+  text-align: center;
+  padding: 12rpx 24rpx;
+  border-bottom: 2rpx solid #fde68a;
+}
+
+/* ---------- Tab ---------- */
+.tabs {
+  display: flex;
+  background: #ffffff;
+  padding: 0 12rpx;
+  border-bottom: 2rpx solid #e5e7eb;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #6b7280;
+  padding: 20rpx 0;
+  position: relative;
+}
+.tab-active { color: #059669; font-weight: 700; }
+.tab-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 48rpx;
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: #059669;
+}
+
+/* ---------- 内容区 ---------- */
+.tab-pane {
+  flex: 1;
+  height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* hidden 属性会被 display:flex 覆盖，这里显式兜底 */
+.tab-pane[hidden] { display: none !important; }
+
+.msg-scroll { flex: 1; height: 0; }
+.pane-scroll { flex: 1; height: 0; }
+.msg-list { padding: 24rpx; }
+.scroll-tail { height: 20rpx; }
+.empty-tip { text-align: center; padding: 80rpx 40rpx; }
+
+/* ---------- 消息气泡 ---------- */
+.msg-row {
+  margin-bottom: 28rpx;
+  display: flex;
+  flex-direction: column;
+}
+.msg-left { align-items: flex-start; }
+.msg-right { align-items: flex-end; }
+.msg-system-row { align-items: center; }
+.msg-meta {
+  font-size: 22rpx;
+  color: #9ca3af;
+  margin-bottom: 8rpx;
+}
+.bubble {
+  max-width: 78%;
+  padding: 18rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  word-break: break-all;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+}
+.bubble-other {
+  background: #ffffff;
+  color: #111827;
+  border-top-left-radius: 6rpx;
+}
+.bubble-self {
+  background: #059669;
+  color: #ffffff;
+  border-top-right-radius: 6rpx;
+}
+.bubble-ai {
+  background: #ffffff;
+  border-left: 6rpx solid #059669;
+  border-top-left-radius: 6rpx;
+}
+.ai-badge {
+  display: block;
+  font-size: 22rpx;
+  color: #059669;
+  font-weight: 700;
+  margin-bottom: 6rpx;
+}
+/* 是 / 不是 / 不重要 大字判定 */
+.verdict {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #059669;
+}
+.msg-system {
+  font-size: 22rpx;
+  color: #9ca3af;
+  background: #f1f5f9;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  text-align: center;
+  max-width: 90%;
+}
+.mention { color: #059669; font-weight: 700; }
+.bubble-self .mention { color: #fde68a; }
+
+/* AI 思考中动画 */
+.thinking-bubble {
+  display: flex;
+  gap: 10rpx;
+  align-items: center;
+  padding: 26rpx 28rpx;
+}
+.dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #059669;
+  animation: blink 1.2s infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+
+/* ---------- 快捷操作 + 输入栏 ---------- */
+.quick-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 12rpx 24rpx 0;
+}
+.quick-btn {
+  font-size: 24rpx;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 8rpx 28rpx;
+  border-radius: 999rpx;
+  font-weight: 600;
+}
+.quick-btn-amber { color: #b45309; background: #fffbeb; }
+
+.input-bar {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  border-top: 2rpx solid #e5e7eb;
+  align-items: center;
+}
+.chat-field { flex: 1; height: 76rpx; padding: 0 20rpx; }
+.send-btn {
+  width: 140rpx;
+  flex-shrink: 0;
+  line-height: 76rpx;
+  font-size: 28rpx;
+}
+
+/* ---------- 题目页 ---------- */
+.story-surface { font-size: 30rpx; line-height: 1.8; }
+.answer-card {
+  background: #fef3c7;
+  border: 2rpx solid #f59e0b;
+}
+.answer-locked { text-align: center; }
+.owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.room-story-list {
+  margin-top: 24rpx;
+  border-top: 2rpx solid #f1f5f9;
+}
+.room-story-count {
+  padding: 16rpx 0 4rpx;
+}
+.room-story-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #f8fafc;
+}
+.room-story-title {
+  font-size: 27rpx;
+  flex: 1;
+  margin-right: 16rpx;
+}
+.room-story-current .room-story-title {
+  color: #059669;
+  font-weight: 700;
+}
+
+/* ---------- 成员页 ---------- */
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid #f8fafc;
+}
+.member-row:last-child { border-bottom: none; }
+.member-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #d1d5db;
+  flex-shrink: 0;
+}
+.member-dot-on { background: #10b981; }
+.member-name { font-size: 29rpx; font-weight: 600; }
+.member-status { margin-left: auto; }
+.invite-card { text-align: center; }
+.invite-code {
+  font-size: 64rpx;
+  font-weight: 800;
+  letter-spacing: 10rpx;
+  color: #059669;
+  margin: 12rpx 0;
+}
+
+/* ---------- 弹窗 ---------- */
+.restore-tip { margin-bottom: 16rpx; }
+.picker-tabs {
+  display: flex;
+  gap: 12rpx;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+.picker-tab {
+  font-size: 26rpx;
+  color: #6b7280;
+  padding: 8rpx 28rpx;
+  border-radius: 999rpx;
+  background: #f1f5f9;
+}
+.picker-tab-active {
+  color: #ffffff;
+  background: #059669;
+  font-weight: 600;
+}
+.picker-scroll { max-height: 50vh; }
+.picker-item {
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #f1f5f9;
+}
+.picker-title { font-weight: 700; font-size: 29rpx; }
+.picker-surface {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.pass-emoji { font-size: 100rpx; text-align: center; }
+.pass-tip { text-align: center; }
+
+/* ---------- 深色模式 ---------- */
+@media (prefers-color-scheme: dark) {
+  /* 顶部 */
+  .room-header {
+    background: #1e293b;
+    border-bottom-color: #334155;
+  }
+  .room-code-label { color: #94a3b8; }
+  .room-code { color: #34d399; }
+  .room-code-copy { background: #334155; color: #cbd5e1; }
+  .online-pill { color: #94a3b8; }
+  .pass-banner {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+    border-bottom-color: #92400e;
+  }
+
+  /* Tab */
+  .tabs {
+    background: #1e293b;
+    border-bottom-color: #334155;
+  }
+  .tab { color: #94a3b8; }
+  .tab-active { color: #34d399; }
+  .tab-active::after { background: #34d399; }
+
+  /* 消息 */
+  .msg-meta { color: #94a3b8; }
+  .bubble { box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3); }
+  .bubble-other {
+    background: #1e293b;
+    color: #e5e7eb;
+  }
+  .bubble-ai {
+    background: #1e293b;
+    border-left-color: #34d399;
+  }
+  .ai-badge { color: #34d399; }
+  .verdict { color: #34d399; }
+  .msg-system {
+    background: #334155;
+    color: #94a3b8;
+  }
+  .mention { color: #34d399; }
+  .dot { background: #34d399; }
+
+  /* 快捷操作 + 输入栏 */
+  .quick-btn { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+  .quick-btn-amber { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+  .input-bar {
+    background: #1e293b;
+    border-top-color: #334155;
+  }
+
+  /* 题目页 */
+  .answer-card {
+    background: rgba(245, 158, 11, 0.10);
+    border-color: #b45309;
+  }
+  .room-story-current .room-story-title { color: #34d399; }
+
+  /* 成员页 */
+  .member-row { border-bottom-color: #334155; }
+  .member-dot { background: #475569; }
+  .member-dot-on { background: #10b981; }
+  .invite-code { color: #34d399; }
+
+  /* 弹窗 */
+  .picker-item { border-bottom-color: #334155; }
+  .picker-tab { background: #334155; color: #94a3b8; }
+  .picker-tab-active { background: #059669; color: #ffffff; }
+}

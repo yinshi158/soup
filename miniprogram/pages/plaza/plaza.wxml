@@ -1,0 +1,59 @@
+<view class="plaza-page">
+
+  <!-- 搜索 -->
+  <view class="search-bar">
+    <input style="height: 75rpx; display: block; box-sizing: border-box" class="input search-input" placeholder="搜索名称 / 编号 / 汤面"
+      value="{{keyword}}" bindinput="onKeyword" bindconfirm="doSearch" confirm-type="search" />
+    <button class="btn-primary search-btn" bindtap="doSearch" style="width: 238rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">搜索</button>
+  </view>
+
+  <!-- 全部 / 我的发布 + 发布入口 -->
+  <view class="plaza-toolbar">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode==='all'?'mode-active':''}}" data-mode="all" bindtap="switchMode">全部</view>
+      <view class="mode-tab {{mode==='mine'?'mode-active':''}}" data-mode="mine" bindtap="switchMode">我的发布</view>
+    </view>
+    <button class="btn-ghost btn-sm" bindtap="goPublish">+ 发布故事</button>
+  </view>
+
+  <!-- 列表 -->
+  <scroll-view scroll-y class="plaza-scroll" bindscrolltolower="loadMore">
+    <view wx:if="{{list.length===0 && !loading}}" class="empty-tip muted">
+      {{mode==='mine'?'你还没有发布过故事，点右上角「发布故事」试试':'广场还没有故事，快来发布第一道吧'}}
+    </view>
+
+    <view class="story-card" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="openDetail">
+      <view class="story-card-top">
+        <text class="tag tag-amber">{{item.plazaNo}}</text>
+        <text class="tag" wx:if="{{item.isMine}}">我发布的</text>
+      </view>
+      <view class="story-card-title">{{item.title}}</view>
+      <view class="story-card-surface">{{item.surface}}</view>
+      <view class="story-card-meta muted">{{item.publisherNickname}} · {{item.time}}</view>
+    </view>
+
+    <view wx:if="{{loading}}" class="empty-tip muted">加载中…</view>
+    <view wx:elif="{{list.length>0 && !hasMore}}" class="empty-tip muted">没有更多了</view>
+  </scroll-view>
+
+  <!-- 详情弹窗 -->
+  <view class="mask" wx:if="{{showDetail}}" catchtouchmove="noop">
+    <view class="modal">
+      <view class="detail-no tag tag-amber">{{detail.plazaNo}}</view>
+      <view class="modal-title">{{detail.title}}</view>
+      <scroll-view scroll-y class="detail-scroll">
+        <view class="detail-surface">{{detail.surface}}</view>
+        <view class="muted detail-meta">发布者：{{detail.publisherNickname}}</view>
+      </scroll-view>
+      <view class="modal-actions">
+        <button class="btn-plain" bindtap="closeDetail">关闭</button>
+        <button class="btn-primary" bindtap="startGame">用这道题开局</button>
+      </view>
+      <view class="modal-actions" wx:if="{{detail.isMine}}">
+        <button class="btn-ghost" bindtap="editStory">编辑</button>
+        <button class="btn-danger" bindtap="removeStory">删除</button>
+      </view>
+    </view>
+  </view>
+
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "init",
+  "version": "1.0.0",
+  "description": "海龟汤一键初始化：建集合+内置题库",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

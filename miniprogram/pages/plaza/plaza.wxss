@@ -1,0 +1,102 @@
+.plaza-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.search-bar {
+  display: flex;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  background: #ffffff;
+  align-items: center;
+}
+/* 搜索输入框外观走 app.wxss 的 .field（外框 + flex 垂直居中）+ .field-inner */
+.search-field { flex: 1; height: 76rpx; padding: 0 20rpx; }
+.search-btn {
+  width: 140rpx;
+  flex-shrink: 0;
+  line-height: 76rpx;
+  font-size: 28rpx;
+}
+
+.plaza-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 24rpx;
+  background: #ffffff;
+  border-bottom: 2rpx solid #e5e7eb;
+}
+.mode-tabs { display: flex; gap: 12rpx; }
+.mode-tab {
+  font-size: 26rpx;
+  color: #6b7280;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  background: #f1f5f9;
+}
+.mode-active {
+  color: #ffffff;
+  background: #059669;
+  font-weight: 600;
+}
+
+.plaza-scroll { flex: 1; height: 0; padding: 8rpx 0; }
+
+.story-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  margin: 20rpx 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+.story-card-top { display: flex; gap: 12rpx; margin-bottom: 12rpx; }
+.story-card-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+.story-card-surface {
+  font-size: 26rpx;
+  color: #4b5563;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.story-card-meta { margin-top: 14rpx; }
+
+.empty-tip { text-align: center; padding: 80rpx 40rpx; }
+
+/* 详情弹窗 */
+.detail-no { align-self: center; margin-bottom: 12rpx; }
+.detail-scroll { max-height: 45vh; }
+.detail-surface { font-size: 29rpx; line-height: 1.8; }
+.detail-meta { margin-top: 20rpx; }
+
+/* ---------- 深色模式 ---------- */
+@media (prefers-color-scheme: dark) {
+  /* 搜索栏 / 工具栏 */
+  .search-bar { background: #1e293b; }
+  .plaza-toolbar {
+    background: #1e293b;
+    border-bottom-color: #334155;
+  }
+  .mode-tab {
+    background: #334155;
+    color: #94a3b8;
+  }
+  .mode-active {
+    background: #059669;
+    color: #ffffff;
+  }
+
+  /* 故事卡片 */
+  .story-card {
+    background: #1e293b;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.35);
+  }
+  .story-card-surface { color: #cbd5e1; }
+}

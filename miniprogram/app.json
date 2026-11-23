@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/room/room",
+    "pages/plaza/plaza",
+    "pages/plaza-publish/plaza-publish"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "@navBgColor",
+    "navigationBarTextStyle": "@navTxtStyle",
+    "navigationBarTitleText": "海龟汤仙人",
+    "backgroundColor": "@bgColor",
+    "backgroundTextStyle": "@bgTxtStyle"
+  },
+  "darkmode": true,
+  "themeLocation": "theme.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}
